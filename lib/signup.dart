@@ -1,5 +1,6 @@
 import'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:job_recommendation/api/registerapi.dart';
 import 'package:job_recommendation/login.dart';
 
 class SignUp extends StatefulWidget {
@@ -10,12 +11,23 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
+  late String _selectedaccount = "none";
   @override
   final TextEditingController _confirmpassController = TextEditingController();
+  final TextEditingController _first = TextEditingController();
+  final TextEditingController _last = TextEditingController();
+  final TextEditingController _username = TextEditingController();
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _phone = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   @override
   void dispose() {
+    _first.dispose();
+    _last.dispose();
+    _username.dispose();
+    _email.dispose();
+    _phone.dispose();
     _confirmpassController .dispose();
     _passwordController.dispose();
     super.dispose();
@@ -32,7 +44,27 @@ class _SignUpState extends State<SignUp> {
 
     }, icon: _isSecurePassword?Icon(Icons.visibility):Icon(Icons.visibility_off));
   }
-
+  int select=0;
+  Widget _account(int selected,String type,icon){
+    var size=MediaQuery.of(context).size;
+    return  Container(
+      height: size.height*0.1,
+      width: size.width*0.27,
+      decoration: BoxDecoration(border: Border.all(color:(select==selected)?Color(0xff00008B):Colors.grey,),borderRadius: BorderRadius.circular(10),color: (select==selected)?Color(0xff6082B6).withOpacity(0.3):Colors.white,),
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon),
+              Text(type,style:TextStyle(fontSize: 12,color: Color(0xff00008B),fontWeight: FontWeight.w500),),
+            ]
+        ),
+        //child: Text("Book a consultation",style:GoogleFonts.sora(fontSize: 15,color: Colors.white),),
+      ),
+    );
+  }
   Widget build(BuildContext context) {
     var size=MediaQuery.of(context).size;
     return Scaffold(
@@ -69,58 +101,30 @@ class _SignUpState extends State<SignUp> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(children: [
-              Container(
-                height: size.height*0.1,
-                width: size.width*0.27,
-                decoration: BoxDecoration(border: Border.all(color: Colors.grey,),borderRadius: BorderRadius.circular(10),color: Colors.white,),
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                   crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                      Icon(Icons.person_outline),
-                        Text("Candidate",style:TextStyle(fontSize: 12,color: Color(0xff00008B),fontWeight: FontWeight.w500),),
-                      ]
-                  ),
-                  //child: Text("Book a consultation",style:GoogleFonts.sora(fontSize: 15,color: Colors.white),),
-                ),
-              ),
+         GestureDetector(onTap:(){
+           setState(() {
+             select=1;
+             _selectedaccount="Candidate";
+           });
+          },
+             child: _account(1,"Candidate",Icons.person_outline)),
               const SizedBox(width: 20,),
-              Container(
-                height: size.height*0.1,
-                width: size.width*0.27,
-                decoration: BoxDecoration(border: Border.all(color: Colors.grey,),borderRadius: BorderRadius.circular(10),color: Colors.white,),
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                      FaIcon(FontAwesomeIcons.buildingUser),
-                        Text("Company",style:TextStyle(fontSize: 12,color: Color(0xff00008B),fontWeight: FontWeight.w500),),
-                      ]
-                  ),
-                  //child: Text("Book a consultation",style:GoogleFonts.sora(fontSize: 15,color: Colors.white),),
-                ),
-              ),
+              GestureDetector(onTap:(){
+                setState(() {
+                  select=2;
+                  _selectedaccount="Company";
+                });
+              },
+                  child: _account(2,"Company",FontAwesomeIcons.buildingUser)),
               const SizedBox(width: 20,),
-              Container(
-                height: size.height*0.1,
-                width: size.width*0.27,
-                decoration: BoxDecoration(border: Border.all(color: Colors.grey,),borderRadius: BorderRadius.circular(10),color: Colors.white,),
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        FaIcon(FontAwesomeIcons.school),
-                        Text("College",style:TextStyle(fontSize: 12,color: Color(0xff00008B),fontWeight: FontWeight.w500),),
-                      ]
-                  ),
-                ),
-              )
+              GestureDetector(
+                  onTap:(){
+                    setState(() {
+                      select=3;
+                      _selectedaccount="College";
+                    });
+                  },
+                  child: _account(3,"College",Icons.school)),
             ],),
           ),
           const SizedBox(height: 20,),
@@ -144,7 +148,7 @@ class _SignUpState extends State<SignUp> {
                       labelStyle: TextStyle(fontSize: 13, color:  Colors.grey, fontWeight: FontWeight.w600,),
                       hintStyle: TextStyle(color: Colors.grey,fontSize: 13),
                     ),
-                    controller: TextEditingController(),
+                    controller: _first,
                     obscureText: false,
                     keyboardType: TextInputType.text,
                     validator: (String? value) {
@@ -173,7 +177,7 @@ class _SignUpState extends State<SignUp> {
                       labelStyle: TextStyle(fontSize: 13, color: Colors.grey, fontWeight: FontWeight.w600),
                       hintStyle: TextStyle(color: Colors.grey,fontSize: 13),
                     ),
-                    controller: TextEditingController(),
+                    controller:_last,
                     obscureText: false,
                     keyboardType: TextInputType.text,
                     validator: (String? value) {
@@ -205,7 +209,7 @@ class _SignUpState extends State<SignUp> {
 
 
               ),
-
+controller: _username,
               obscureText: false,
               keyboardType: TextInputType.text,
               validator: (String? value) {
@@ -233,6 +237,7 @@ class _SignUpState extends State<SignUp> {
                 prefixIconColor: Colors.grey,
                 suffixIconColor: Colors.grey,
               ),
+              controller: _email,
               keyboardType: TextInputType.text,
               validator: (String? value) {
                 if (value!.isEmpty) {
@@ -254,6 +259,7 @@ class _SignUpState extends State<SignUp> {
                 hintText: 'Phone',
                 hintStyle: TextStyle(color: Colors.grey,fontSize: 13),
               ),
+              controller: _phone,
               keyboardType: TextInputType.text,
               validator: (String? value) {
                 if (value!.isEmpty) {
@@ -319,7 +325,7 @@ class _SignUpState extends State<SignUp> {
 
                     ),
 
-controller: _confirmpassController,
+                 controller: _confirmpassController,
 
                     keyboardType: TextInputType.text,
                     validator: (String? value) {
@@ -357,18 +363,27 @@ controller: _confirmpassController,
               ],
             ),
           ),
-          GestureDetector(
-            onTap: (){
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Login()));
-            },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Row(
-                children: [
-                  Text("Already have an account?",style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Colors.grey)),
-                  Text("Login",style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Color(0xff04BADE),)),
-                 const SizedBox(width: 20,),
-                  Container(
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Row(
+              children: [
+                Text("Already have an account?",style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Colors.grey)),
+                GestureDetector(
+                  onTap: (){
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Login()));
+                  },
+                    child: Text("Login",style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Color(0xff04BADE),))),
+               const SizedBox(width: 20,),
+                GestureDetector(
+                  onTap: () async{
+                    print(_selectedaccount);
+                    registerUser(_selectedaccount, _first.text, _last.text, _username.text, _email.text, _phone.text, _passwordController.text);
+    await Future.delayed(Duration(seconds: 2),);
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Login()));
+
+
+                  },
+                  child: Container(
                     //decoration: BoxDecoration(borderRadius: BorderRadius.circular(20),color: Colors.blue,),
                     child: Card(
                       color: Colors.blue,
@@ -385,8 +400,8 @@ controller: _confirmpassController,
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           )
         ],

@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:job_recommendation/api/loginapi.dart';
+import 'package:job_recommendation/homepage.dart';
 import 'package:job_recommendation/signup.dart';
  // import 'package:google_fonts/google_fonts.dart';
 
@@ -14,7 +16,7 @@ class _LoginState extends State<Login> {
   @override
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
+ late int userId;
   @override
   void dispose() {
     _emailController.dispose();
@@ -177,23 +179,38 @@ child: Row(children: [
             ],
           ),
           const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Card(
-              color: Color(0xffD3D3D3),
-              // color: Colors.black12,
-              elevation: 1,
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Center(child: Text("Login ",style:TextStyle(fontSize: 15,color: Colors.grey,fontWeight: FontWeight.w500),)),
-                //child: Text("Book a consultation",style:GoogleFonts.sora(fontSize: 15,color: Colors.white),),
+          GestureDetector(
+            onTap: ()async{
+              print(_emailController.text);
+              userId = (await loginUser(_emailController.text, _passwordController.text))!;
+              print(userId);
+
+                await Future.delayed(Duration(seconds: 2));
+
+                // Navigate to HomePage with userId
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomePage(userID: userId),
+                  ),
+                );
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Card(
+                color: Color(0xffD3D3D3),
+                // color: Colors.black12,
+                elevation: 1,
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Center(child: Text("Login ",style:TextStyle(fontSize: 15,color: Colors.grey,fontWeight: FontWeight.w500),)),
+                ),
               ),
             ),
           ),
           const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.all(10.0),
-
             child: GestureDetector(
               onTap: (){
                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>SignUp()));
